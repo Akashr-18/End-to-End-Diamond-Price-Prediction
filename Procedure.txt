@@ -1,4 +1,16 @@
+conda create -n ml_endtoend_diamond python==3.10 -y
 step 1. Create Template.py
 step 2. Update requirements.txt 
         Update setup.py
 step 3. Create logging file in src/DiamondRegressor/__init__.py and check it
+step 4. Create common.py in utils folder and all common functions
+step 5. Update config/config.yaml and params.yaml(if req)
+        Create Notebook: 01_data_ingestion.ipynb
+        Constants
+        Entity
+        Configuration
+        Components
+        Pipeline
+step 6. -dvc init
+        -dvc add data_given/winequality.csv
+        
