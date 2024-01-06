@@ -3,7 +3,7 @@ from pathlib import Path
 from DiamondRegressor.entity.config_entity import (DataIngestionConfig, 
                                                    DataPreprocessingConfig,
                                                    ModelTrainingConfig,
-                                                   ModelParameters)
+                                                   ModelParametersConfig)
 from DiamondRegressor.constants import *
 from DiamondRegressor.utils.common import read_yaml, create_directories
 
@@ -53,10 +53,18 @@ class ConfigurationManager:
         )
         return model_training_config
     
-    def get_model_parameters(self) -> ModelParameters:
-        params = self.params.models
+    def get_model_parameters_config(self) -> ModelParametersConfig:
+        params_config = self.params.models
         
-        model_parameters_config = ModelParameters(
-            xgboost_n_estimators = params.XgBoost.params.n_estimators,
-            xgboost_learning_rate = params.XgBoost.params.learning_rate
+        model_parameters_config = ModelParametersConfig(
+            xgboost_n_estimators = params_config.XgBoost.params.n_estimators,
+            xgboost_learning_rate = params_config.XgBoost.params.learning_rate,
+            xgboost_max_depth = params_config.XgBoost.params.max_depth,
+            xgboost_min_child_weight = params_config.XgBoost.params.min_child_weight,
+            xgboost_gamma = params_config.XgBoost.params.gamma,
+            xgboost_colsample_bytree = params_config.XgBoost.params.colsample_bytree,
+            xgboost_subsample = params_config.XgBoost.params.subsample,
+            xgboost_reg_alpha = params_config.XgBoost.params.reg_alpha,
+            xgboost_reg_lambda = params_config.XgBoost.params.reg_lambda
         )
+        return model_parameters_config

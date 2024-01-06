@@ -20,7 +20,7 @@ class ModelTrainingConfig:
     plot_file_path: Path
 
 @dataclass(frozen=True)
-class ModelParameters:
+class ModelParametersConfig:
     xgboost_n_estimators : list
     xgboost_learning_rate: list
     xgboost_max_depth: list
@@ -30,9 +30,9 @@ class ModelParameters:
     xgboost_subsample: list
     xgboost_reg_alpha: list
     xgboost_reg_lambda: list
-    randomforest_n_estimators: list
-    randomforest_criterion: list
-    randomforest_max_depth: list
-    randomforest_min_samples_split: list
-    randomforest_min_samples_leaf: list
-    randomforest_bootstrap: list
+    # randomforest_n_estimators: list
+    # randomforest_criterion: list
+    # randomforest_max_depth: list
+    # randomforest_min_samples_split: list
+    # randomforest_min_samples_leaf: list
+    # randomforest_bootstrap: list
