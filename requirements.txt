@@ -14,4 +14,7 @@ tqdm
 ensure==1.0.2
 joblib
 types-PyYAML
+kneed
+xgboost
+joblib
 -e .

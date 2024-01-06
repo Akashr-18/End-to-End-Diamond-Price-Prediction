@@ -5,3 +5,12 @@ data_ingestion:
   source_url: https://github.com/Akashr-18/Data_Store/raw/main/data_diamond_price.zip
   local_data_file: artifacts/data_ingestion/data.zip
   unzip_dir: artifacts/data_ingestion
+
+data_preprocessing:
+  root_dir: data
+  data_file_path: data/diamonds_processed.csv
+
+model_training:
+  root_dir: models
+  plot_dir: plots
+  plot_file_path: plots/kmeans.png

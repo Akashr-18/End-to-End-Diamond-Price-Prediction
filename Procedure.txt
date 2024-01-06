@@ -13,4 +13,11 @@ step 5. Update config/config.yaml and params.yaml(if req)
         Pipeline
 step 6. -dvc init
         -dvc add data_given/winequality.csv
+step 7. Update config/config.yaml and params.yaml(if req)
+        Create NoteBook/DataPreprocessing.ipynb
+        Constants
+        Entity
+        Configuration
+        Components
+        Pipeline
         

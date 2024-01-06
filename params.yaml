@@ -1,1 +1,21 @@
-'key': 'value'
+models:
+  XgBoost:
+    params:
+      n_estimators: [50, 100, 150, 200]
+      learning_rate: [0.05, 0.10, 0.15, 0.20]
+      max_depth: [ 3, 4, 6, 8]
+      min_child_weight: [1,2,3,4]
+      gamma: [ 0.0, 0.1, 0.2 , 0.3]
+      colsample_bytree: [ 0.5 , 0.7, 0.8, 0.9 ]
+      subsample: [0.8, 0.9, 1.0]
+      reg_alpha: [0, 0.1, 0.5, 1.0]
+      reg_lambda: [0, 1.0, 10.0, 50.0]
+
+  RandomForest:
+    params:
+      n_estimators: [50, 100, 150, 200]
+      criterion: ["squared_error", "absolute_error", "poisson"]
+      max_depth: [None, 10, 20, 30]
+      min_samples_split: [2, 5, 10]
+      min_samples_leaf: [1, 2, 4]
+      bootstrap: [True, False]
