@@ -14,24 +14,24 @@ except Exception as e:
     logger.exception(e)
     raise e
 
-STAGE_NAME = 'Data Preprocessing Stage'
-try:
-    logger.info(f'>>>>>>> Stage2: {STAGE_NAME} started <<<<<<<')
-    data_preprocessing_obj = DataPreprocessingTrainingPipeline()
-    data_preprocessing_obj.main()
-    logger.info(f'>>>>>>> Stage2: {STAGE_NAME} completed <<<<<<<')
+# STAGE_NAME = 'Data Preprocessing Stage'
+# try:
+#     logger.info(f'>>>>>>> Stage2: {STAGE_NAME} started <<<<<<<')
+#     data_preprocessing_obj = DataPreprocessingTrainingPipeline()
+#     data_preprocessing_obj.main()
+#     logger.info(f'>>>>>>> Stage2: {STAGE_NAME} completed <<<<<<<')
         
-except Exception as e:
-    logger.exception(e)
-    raise e
+# except Exception as e:
+#     logger.exception(e)
+#     raise e
 
-STAGE_NAME = 'Model Training Stage'
-try:
-    logger.info(f'>>>>>>> Stage3: {STAGE_NAME} started <<<<<<<')
-    model_training_obj = ModelTrainingPipeline()
-    model_training_obj.main()
-    logger.info(f'>>>>>>> Stage3: {STAGE_NAME} completed <<<<<<<')
+# STAGE_NAME = 'Model Training Stage'
+# try:
+#     logger.info(f'>>>>>>> Stage3: {STAGE_NAME} started <<<<<<<')
+#     model_training_obj = ModelTrainingPipeline()
+#     model_training_obj.main()
+#     logger.info(f'>>>>>>> Stage3: {STAGE_NAME} completed <<<<<<<')
     
-except Exception as e:
-    logger.exception(e)
-    raise e
+# except Exception as e:
+#     logger.exception(e)
+#     raise e

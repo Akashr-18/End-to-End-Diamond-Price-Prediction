@@ -4,6 +4,7 @@ from pathlib import Path
 from DiamondRegressor import logger
 from DiamondRegressor.entity.config_entity import DataPreprocessingConfig, DataIngestionConfig
 from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split
 
 class DataPreprocessing:
 
@@ -17,7 +18,7 @@ class DataPreprocessing:
     def encode_categorical_data(self):
 
         data_folder_path = self.config_dataingestion.root_dir
-        data_file_path = os.path.join(data_folder_path,'diamonds.csv')
+        data_file_path = os.path.join(data_folder_path,'train_test.csv')
         data_file_path = Path(data_file_path)
 
         df = pd.read_csv(data_file_path)

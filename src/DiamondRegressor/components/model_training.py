@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 from DiamondRegressor.entity.config_entity import ModelTrainingConfig
-from DiamondRegressor.utils.common import create_directories
+from DiamondRegressor.utils.common import create_directories, save_object
 from DiamondRegressor import logger
 from sklearn.cluster import KMeans
 from sklearn.model_selection import train_test_split, RandomizedSearchCV, GridSearchCV
@@ -55,11 +55,14 @@ class Training:
         logger.info(f"Optimal number of clusters from elbow plot is {no_of_clusters}")
 
         logger.info("Clustering started")
+        print(data.sample(2))
         kmeans = KMeans(n_clusters=no_of_clusters, init='k-means++', n_init=10, random_state=42)
         y_kmeans = kmeans.fit_predict(data)
+        save_object(os.path.join('c_obj','preprocessor.pkl'), kmeans)
 
         logger.info("Clustering completed successfully")
         data['Cluster'] = y_kmeans
+        print(data.sample(2))
         clusters = len(data['Cluster'].unique())
         logger.info(f"Unique clusters created in the data: {data['Cluster'].unique()}")
         logger.info(f"Updated data shape with cluster column being added: {data.shape}")

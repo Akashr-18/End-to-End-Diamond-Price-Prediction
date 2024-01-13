@@ -7,11 +7,12 @@ class DataIngestionConfig:
     source_url : str
     local_data_file : Path
     unzip_dir : Path
+    train_data_file_path: Path
+    test_data_file_path: Path
 
 @dataclass(frozen=True)
 class DataPreprocessingConfig:
     root_dir : Path
-    data_file_path : Path
     
 @dataclass(frozen=True)
 class ModelTrainingConfig:

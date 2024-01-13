@@ -5,6 +5,7 @@ from box.exceptions import BoxValueError
 from ensure import ensure_annotations
 from DiamondRegressor import logger
 import base64
+import pickle
 
 @ensure_annotations
 def read_yaml(path: Path) -> ConfigBox:
@@ -57,3 +58,20 @@ def decodeImage(imgString, fileName):
 def encodeImgae(croppedImagePath):
     with open(croppedImagePath, 'rb') as f:
         return base64.b64encode(f.read())
+    
+def save_object(file_path, obj):
+    try:
+        dir_path = os.path.dirname(file_path)
+        os.makedirs(dir_path, exist_ok=True)
+        with open(file_path, "wb") as file_obj:
+            pickle.dump(obj, file_obj)
+
+    except Exception as e:
+        raise e
+    
+def load_object(file_path):
+    try:
+        with open(file_path,'rb') as file_obj:
+            return pickle.load(file_obj)
+    except Exception as e:
+        raise e
