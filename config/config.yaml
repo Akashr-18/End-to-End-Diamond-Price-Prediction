@@ -9,9 +9,14 @@ data_ingestion:
   test_data_file_path: artifacts/data_ingestion/test.csv
 
 data_preprocessing:
-  root_dir: artifacts/data
+  root_dir: artifacts/preprocessing_object
+  preprocessor_file_path: artifacts/preprocessing_object/preprocessor.pkl
   
 model_training:
   root_dir: artifacts/models
   plot_dir: artifacts/plots
   plot_file_path: artifacts/plots/kmeans.png
+
+training:
+  root_dir: artifacts/models
+  model_path: artifacts/models/model.pkl

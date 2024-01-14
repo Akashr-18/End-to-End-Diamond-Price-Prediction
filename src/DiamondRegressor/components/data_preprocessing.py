@@ -1,10 +1,17 @@
 import pandas as pd
+import numpy as np
 import os
-from pathlib import Path
+# from pathlib import Path
 from DiamondRegressor import logger
+from DiamondRegressor.utils.common import save_object
 from DiamondRegressor.entity.config_entity import DataPreprocessingConfig, DataIngestionConfig
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
+from sklearn.impute import SimpleImputer #Handling missing values
+from sklearn.preprocessing import OrdinalEncoder #Ordinal Encoding
+from sklearn.preprocessing import StandardScaler #Feature Scaling
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
 
 class DataPreprocessing:
 
@@ -15,31 +22,93 @@ class DataPreprocessing:
         self.config = config
         self.config_dataingestion = config_dataingestion
 
-    def encode_categorical_data(self):
+    def data_transformation(self):
 
-        data_folder_path = self.config_dataingestion.root_dir
-        data_file_path = os.path.join(data_folder_path,'train_test.csv')
-        data_file_path = Path(data_file_path)
+        dataframe_path = self.config_dataingestion.train_data_file_path
+        df = pd.read_csv(dataframe_path)
+        logger.info(f'For data transformation loaded sample df shape: {df.shape}')
 
-        df = pd.read_csv(data_file_path)
-        df_updated = df.copy()
-        logger.info(f'Loaded df shape: {df_updated.shape}')
+        target_column_name = 'price'
+        df = df.drop(columns=['id',target_column_name], axis=1)
 
-        categorical_cols = df_updated.select_dtypes(include='object').columns
-        numerical_cols = df_updated.select_dtypes(include='number').columns
-        logger.info(f"Loaded data is having {len(numerical_cols)} numerical columns and {len(categorical_cols)} categorical columns")
-
-        label_encoder = LabelEncoder()
+        # categorical_cols = ['cut', 'color','clarity']
+        # numerical_cols = ['carat', 'depth','table', 'x', 'y', 'z']
         
-        for col in categorical_cols:
-            df_updated[col] = label_encoder.fit_transform(df_updated[col])
-            logger.info(f"Encoding categorical column :{col}")
-            logger.info(f"{col}: {df_updated[col].unique()}")
-        logger.info(f"Encoding completed successfully")
+        categorical_columns = df.select_dtypes(include = 'object').columns
+        numerical_columns = df.select_dtypes(exclude = 'object').columns
 
-        if len(df_updated.select_dtypes(include='object').columns) == 0:
-            updated_data_file_path = self.config.data_file_path
-            updated_data_file_path = Path(updated_data_file_path)
-            df_updated.to_csv(updated_data_file_path, index=False)
-            logger.info("Updated data file saved at {}".format(updated_data_file_path))
+        categorical_columns = list(categorical_columns)
+        numerical_columns = list(numerical_columns)
+        logger.info(f"Categorical columns: {categorical_columns}")
+        logger.info(f"Numerical columns: {numerical_columns}")
 
+        cut_categories = ['Fair', 'Good', 'Very Good','Premium','Ideal']
+        color_categories = ['D', 'E', 'F', 'G', 'H', 'I', 'J']
+        clarity_categories = ['I1','SI2','SI1','VS2','VS1','VVS2','VVS1','IF']
+
+        num_pipeline = Pipeline(
+            steps = [
+                ("imputer",SimpleImputer(strategy='median')),
+                ("scaler", StandardScaler())
+            ]
+        )
+
+        cat_pipeline = Pipeline(
+            steps = [
+                ("imputer", SimpleImputer(strategy='most_frequent')),
+                ("encoding", OrdinalEncoder(categories=[cut_categories,color_categories,clarity_categories])),
+                ('scaler',StandardScaler())
+            ]
+        )
+
+        preprocessor = ColumnTransformer(
+            [
+                ("numerical pipeline", num_pipeline, numerical_columns),
+                ("categorical pipeline", cat_pipeline, categorical_columns)
+            ]
+        )
+        return preprocessor  
+
+    def data_preprocessing(self):
+
+        train_data_file_path = self.config_dataingestion.train_data_file_path
+        test_data_file_path = self.config_dataingestion.test_data_file_path
+
+        train_df = pd.read_csv(train_data_file_path)
+        test_df = pd.read_csv(test_data_file_path)
+        logger.info(f"Train data file and Test data file loaded")
+
+        preprocessing_obj = self.data_transformation()
+
+        target_column_name = 'price'
+
+        X_train_df = train_df.drop(columns = [target_column_name, 'id'], axis=1)
+        y_train_df = train_df[[target_column_name]]
+
+        X_test_df = test_df.drop(columns = [target_column_name, 'id'], axis=1)
+        y_test_df = test_df[[target_column_name]]
+
+        X_train_arr = preprocessing_obj.fit_transform(X_train_df)
+        X_test_arr = preprocessing_obj.transform(X_test_df)
+
+        logger.info("Applying preprocessing object on training and testing datasets.")
+
+        train_arr = np.c_[X_train_arr, np.array(y_train_df)]
+        test_arr = np.c_[X_test_arr, np.array(y_test_df)]
+        # print(train_arr.shape)
+        # print("######################")
+        # print(test_arr[0])
+
+        save_object(
+            file_path=self.config.preprocessor_file_path,
+            obj=preprocessing_obj
+        )
+        
+        logger.info("preprocessing pickle file saved")
+        
+        return (
+            train_arr,
+            test_arr
+        )
+
+    

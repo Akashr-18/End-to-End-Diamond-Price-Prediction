@@ -3,7 +3,8 @@ from pathlib import Path
 from DiamondRegressor.entity.config_entity import (DataIngestionConfig, 
                                                    DataPreprocessingConfig,
                                                    ModelTrainingConfig,
-                                                   ModelParametersConfig)
+                                                   ModelParametersConfig,
+                                                   TrainingConfig)
 from DiamondRegressor.constants import *
 from DiamondRegressor.utils.common import read_yaml, create_directories
 
@@ -38,7 +39,7 @@ class ConfigurationManager:
 
         data_preprocessing_config = DataPreprocessingConfig(
             root_dir= config.root_dir,
-            data_file_path= config.data_file_path
+            preprocessor_file_path= config.preprocessor_file_path
         )
 
         return data_preprocessing_config
@@ -70,3 +71,13 @@ class ConfigurationManager:
             xgboost_reg_lambda = params_config.XgBoost.params.reg_lambda
         )
         return model_parameters_config
+    
+    def get_training_config(self) -> TrainingConfig:
+        config = self.config.training
+        create_directories([config.root_dir])
+
+        training_config = TrainingConfig(
+            root_dir= config.root_dir,
+            model_path= config.model_path
+        )
+        return training_config

@@ -14,7 +14,7 @@ class DataPreprocessingTrainingPipeline:
         data_preprocessing_config = config.get_data_preprocessing_config()
         data_preprocessor = DataPreprocessing(config = data_preprocessing_config,
                                        config_dataingestion = data_ingestion_config)
-        data_preprocessor.encode_categorical_data()
+        train_arr, test_arr = data_preprocessor.data_preprocessing()
 
 if __name__ == '__main__':
     try:

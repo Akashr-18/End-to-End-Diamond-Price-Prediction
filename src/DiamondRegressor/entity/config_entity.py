@@ -13,6 +13,7 @@ class DataIngestionConfig:
 @dataclass(frozen=True)
 class DataPreprocessingConfig:
     root_dir : Path
+    preprocessor_file_path: Path
     
 @dataclass(frozen=True)
 class ModelTrainingConfig:
@@ -37,3 +38,8 @@ class ModelParametersConfig:
     # randomforest_min_samples_split: list
     # randomforest_min_samples_leaf: list
     # randomforest_bootstrap: list
+
+@dataclass(frozen=True)
+class TrainingConfig:
+    root_dir : Path
+    model_path: Path
