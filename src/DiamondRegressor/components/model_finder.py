@@ -10,6 +10,8 @@ from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
 from DiamondRegressor.entity.config_entity import ModelParametersConfig
 from DiamondRegressor.constants import *
 from DiamondRegressor.utils.common import read_yaml
+import mlflow
+from urllib.parse import urlparse
 
 class ModelFinder:
     def __init__(self, 
@@ -108,22 +110,67 @@ class ModelFinder:
         rmse = np.sqrt(mean_squared_error(y_test, y_pred))
         return updated_model, score_r2, mae, rmse
     
+    def train_and_log_model(model, train_x, train_y, test_x, test_y):
+        with mlflow.start_run():
+            logger.info(f"MLflow train model started")
+            model.fit(train_x, train_y)
+            pred_y = model.predict(test_x)
+
+            r2 = r2_score(test_y, pred_y)
+            mae = mean_absolute_error(test_y, pred_y)
+            rmse = np.sqrt(mean_squared_error(test_y, pred_y))
+
+            mlflow.log_metric("r2", r2)
+            mlflow.log_metric("rmse", rmse)
+            mlflow.log_metric("mae", mae)
+
+            # For remote server only (Dagshub)
+            remote_server_uri = "https://dagshub.com/Akashr-18/mlflow-demo.mlflow"
+            mlflow.set_tracking_uri(remote_server_uri)
+
+            tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
+
+            model_name_convention = type(model).__name__
+            if tracking_url_type_store != "file":
+                # https://mlflow.org/docs/latest/model-registry.html#api-workflow
+                mlflow.sklearn.log_model(
+                    model,
+                    "model", 
+                    registered_model_name=model_name_convention
+                )
+            else:
+                mlflow.sklearn.log_model(model, "model")
+
+            # Save the model to the prediction_service/model directory
+            # model_path = "prediction_service/model"
+            # mlflow.pyfunc.save_model(model, model_path)
+
+            # mlflow.sklearn.log_model(model, "model")
+
+            model_name = type(model).__name__.lower()
+            model_path = f"service/model_{model_name}"
+            mlflow.pyfunc.save_model(model, model_path)
+
     @staticmethod
     def find_best_model_for_cluster(x_train, x_test, y_train, y_test):
-        # lr_model, lr_r2_score, lr_mae, lr_rmse = self.linearregression_model(x_train, x_test, y_train, y_test) 
+        lr_model, lr_r2_score, lr_mae, lr_rmse = ModelFinder().linearregression_model(x_train, x_test, y_train, y_test) 
         # svr_model, svr_r2_score, svr_mae, svr_rmse = self.svr_model(x_train, x_test, y_train, y_test)
         # dt_model, dt_r2_score, dt_mae, dt_rmse = self.decisiontree_model(x_train, x_test, y_train, y_test)
         xgb_model, xgb_r2_score, xgb_mae, xgb_rmse = ModelFinder().xgboost_model(x_train, x_test, y_train, y_test)
-        rf_model, rf_r2_score, rf_mae, rf_rmse = ModelFinder().randomforest_model(x_train, x_test, y_train, y_test)
+        # rf_model, rf_r2_score, rf_mae, rf_rmse = ModelFinder().randomforest_model(x_train, x_test, y_train, y_test)
         # print('LR: ', lr_r2_score, lr_mae, lr_rmse)
         # print('SVR: ', svr_r2_score, svr_mae, svr_rmse)
         # print('DT: ', dt_r2_score, dt_mae, dt_rmse)
-        logger.info(f"Eval Metrics for Random Forest model r2score: {rf_r2_score} mae: {rf_mae}, rmse: {rf_rmse}")
+        logger.info(f"XGB model is {xgb_model}")
+        logger.info(f"RF model is {lr_model}")
+        ModelFinder().train_and_log_model(lr_model,x_train, x_test, y_train, y_test)
+        ModelFinder().train_and_log_model(xgb_model,x_train, x_test, y_train, y_test)
+        # logger.info(f"Eval Metrics for Random Forest model r2score: {rf_r2_score} mae: {rf_mae}, rmse: {rf_rmse}")
         logger.info(f"Eval Metrics for XgBoost model r2score: {xgb_r2_score} mae: {xgb_mae}, rmse: {xgb_rmse}")
-        
+
         model_r2_scores = {
-            # 'decision_tree': {'model': dt_model, 'r2_score': dt_r2_score},s
-            'random_forest': {'model': rf_model, 'r2_score': rf_r2_score},
+            'linear_regression': {'model': lr_model, 'r2_score': lr_r2_score},
+            # 'random_forest': {'model': rf_model, 'r2_score': rf_r2_score},
             'xgboost': {'model': xgb_model, 'r2_score': xgb_r2_score},
         }
         best_model_info = max(model_r2_scores.values(), key=lambda x: x['r2_score'])
