@@ -125,7 +125,7 @@ class ModelFinder:
             mlflow.log_metric("mae", mae)
 
             # For remote server only (Dagshub)
-            remote_server_uri = "https://dagshub.com/Akashr-18/mlflow-demo.mlflow"
+            remote_server_uri = "https://dagshub.com/Akashr-18/End-to-End-Diamond-Price-Prediction.mlflow"
             mlflow.set_tracking_uri(remote_server_uri)
 
             tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
