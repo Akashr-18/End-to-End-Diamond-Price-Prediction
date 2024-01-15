@@ -1,6 +1,6 @@
 import numpy as np
 from DiamondRegressor import logger
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LinearRegression, Lasso, Ridge, ElasticNet
 from sklearn.svm import SVR
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
@@ -42,28 +42,70 @@ class ModelFinder:
         score_r2_xgb = r2_score(y_test, y_pred_xgb)
         mae_xgb = mean_absolute_error(y_test, y_pred_xgb)
         mse_xgb = np.sqrt(mean_squared_error(y_test, y_pred_xgb))
+
+        with mlflow.start_run():
+            mlflow.log_metric("xg_r2", score_r2_xgb)
+            mlflow.log_metric("xg_rmse", mse_xgb)
+            mlflow.log_metric("xg_mae", mae_xgb)
+
+            remote_server_uri = "https://dagshub.com/Akashr-18/End-to-End-Diamond-Price-Prediction.mlflow"
+            mlflow.set_tracking_uri(remote_server_uri)
+
+            tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
+
+            model_name_convention = type(updated_xgb_model).__name__
+            if tracking_url_type_store != "file":
+                mlflow.sklearn.log_model(
+                    updated_xgb_model,
+                    "model", 
+                    registered_model_name=model_name_convention
+                )
+            else:
+                mlflow.sklearn.log_model(updated_xgb_model, "model")
+
         return updated_xgb_model, score_r2_xgb, mae_xgb, mse_xgb
     
     def randomforest_model(self, x_train, x_test, y_train, y_test):
         rf_model = RandomForestRegressor()
         params = {
-            'n_estimators'      : self.params['models']['RandomForest']['params']['n_estimators'],
-            'criterion'         : self.params['models']['RandomForest']['params']['criterion'],
-            'max_depth'         : self.params['models']['RandomForest']['params']['max_depth'],
-            'min_samples_split' : self.params['models']['RandomForest']['params']['min_samples_split'],
+            # 'n_estimators'      : self.params['models']['RandomForest']['params']['n_estimators'],
+            # 'criterion'         : self.params['models']['RandomForest']['params']['criterion'],
+            # 'max_depth'         : self.params['models']['RandomForest']['params']['max_depth'],
+            # 'min_samples_split' : self.params['models']['RandomForest']['params']['min_samples_split'],
             # 'min_samples_leaf'  : self.params['models']['RandomForest']['params']['min_samples_leaf'],
             # 'bootstrap'         : self.params['models']['RandomForest']['params']['bootstrap'],
         }
-        random_search_rf = RandomizedSearchCV(rf_model, param_distributions=params, n_iter=5, n_jobs=-1, cv=5)
-        random_search_rf.fit(x_train, y_train)
-        logger.info(f"Best params for RandomForest: {random_search_rf.best_params_}")
-        updated_rf_model = random_search_rf.best_estimator_
-        updated_rf_model.fit(x_train,y_train)
-        y_pred_rf = updated_rf_model.predict(x_test)
+        # random_search_rf = RandomizedSearchCV(rf_model, param_distributions=params, n_iter=3, n_jobs=-1, cv=5)
+        # random_search_rf.fit(x_train, y_train)
+        # logger.info(f"Best params for RandomForest: {random_search_rf.best_params_}")
+        # updated_rf_model = random_search_rf.best_estimator_
+        rf_model.fit(x_train,y_train)
+        y_pred_rf = rf_model.predict(x_test)
         score_r2_rf = r2_score(y_test, y_pred_rf)
         mae_rf = mean_absolute_error(y_test, y_pred_rf)
         mse_rf = np.sqrt(mean_squared_error(y_test, y_pred_rf))
-        return updated_rf_model, score_r2_rf, mae_rf, mse_rf
+
+        with mlflow.start_run():
+            mlflow.log_metric("rf_r2", score_r2_rf)
+            mlflow.log_metric("rf_rmse", mse_rf)
+            mlflow.log_metric("rf_mae", mae_rf)
+
+            remote_server_uri = "https://dagshub.com/Akashr-18/End-to-End-Diamond-Price-Prediction.mlflow"
+            mlflow.set_tracking_uri(remote_server_uri)
+
+            tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
+
+            model_name_convention = type(rf_model).__name__
+            if tracking_url_type_store != "file":
+                mlflow.sklearn.log_model(
+                    rf_model,
+                    "model", 
+                    registered_model_name=model_name_convention
+                )
+            else:
+                mlflow.sklearn.log_model(rf_model, "model")
+                
+        return rf_model, score_r2_rf, mae_rf, mse_rf
 
     def decisiontree_model(self, x_train, x_test, y_train, y_test):
         model = DecisionTreeRegressor()
@@ -81,6 +123,27 @@ class ModelFinder:
         score_r2 = r2_score(y_test, y_pred)
         mae = mean_absolute_error(y_test, y_pred)
         rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+
+        with mlflow.start_run():
+            mlflow.log_metric("r2", score_r2)
+            mlflow.log_metric("rmse", rmse)
+            mlflow.log_metric("mae", mae)
+
+            remote_server_uri = "https://dagshub.com/Akashr-18/End-to-End-Diamond-Price-Prediction.mlflow"
+            mlflow.set_tracking_uri(remote_server_uri)
+
+            tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
+
+            model_name_convention = type(updated_model).__name__
+            if tracking_url_type_store != "file":
+                mlflow.sklearn.log_model(
+                    updated_model,
+                    "lr_model", 
+                    registered_model_name=model_name_convention
+                )
+            else:
+                mlflow.sklearn.log_model(updated_model, "model")
+
         return updated_model, score_r2, mae, rmse
     
     def svr_model(self, x_train, x_test, y_train, y_test):
@@ -90,7 +153,7 @@ class ModelFinder:
             'kernel': ['linear', 'poly', 'rbf', 'sigmoid'],
             'gamma': ['scale', 'auto'],
         }
-        random_search = RandomizedSearchCV(model, param_distributions=params, n_iter=5, n_jobs=-1, cv=5)
+        random_search = RandomizedSearchCV(model, param_distributions=params, n_iter=3, n_jobs=-1, cv=5)
         random_search.fit(x_train, y_train)
         print("Best params for SVR: ", random_search.best_params_)
         updated_model = random_search.best_estimator_
@@ -99,6 +162,27 @@ class ModelFinder:
         score_r2 = r2_score(y_test, y_pred)
         mae = mean_absolute_error(y_test, y_pred)
         rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+
+        with mlflow.start_run():
+            mlflow.log_metric("r2", score_r2)
+            mlflow.log_metric("rmse", rmse)
+            mlflow.log_metric("mae", mae)
+
+            remote_server_uri = "https://dagshub.com/Akashr-18/End-to-End-Diamond-Price-Prediction.mlflow"
+            mlflow.set_tracking_uri(remote_server_uri)
+
+            tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
+
+            model_name_convention = type(updated_model).__name__
+            if tracking_url_type_store != "file":
+                mlflow.sklearn.log_model(
+                    updated_model,
+                    "lr_model", 
+                    registered_model_name=model_name_convention
+                )
+            else:
+                mlflow.sklearn.log_model(updated_model, "model")
+
         return updated_model, score_r2, mae, rmse
     
     def linearregression_model(self, x_train, x_test, y_train, y_test):
@@ -108,9 +192,120 @@ class ModelFinder:
         score_r2 = r2_score(y_test, y_pred)
         mae = mean_absolute_error(y_test, y_pred)
         rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+
+        with mlflow.start_run():
+            mlflow.log_metric("r2", score_r2)
+            mlflow.log_metric("rmse", rmse)
+            mlflow.log_metric("mae", mae)
+
+            remote_server_uri = "https://dagshub.com/Akashr-18/End-to-End-Diamond-Price-Prediction.mlflow"
+            mlflow.set_tracking_uri(remote_server_uri)
+
+            tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
+
+            model_name_convention = type(updated_model).__name__
+            if tracking_url_type_store != "file":
+                mlflow.sklearn.log_model(
+                    updated_model,
+                    "lr_model", 
+                    registered_model_name=model_name_convention
+                )
+            else:
+                mlflow.sklearn.log_model(updated_model, "model")
+
         return updated_model, score_r2, mae, rmse
     
-    def train_and_log_model(model, train_x, train_y, test_x, test_y):
+    def lasso_model(self, x_train, x_test, y_train, y_test):
+        updated_model = Lasso()
+        updated_model.fit(x_train,y_train)
+        y_pred = updated_model.predict(x_test)
+        score_r2 = r2_score(y_test, y_pred)
+        mae = mean_absolute_error(y_test, y_pred)
+        rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+
+        with mlflow.start_run():
+            mlflow.log_metric("r2", score_r2)
+            mlflow.log_metric("rmse", rmse)
+            mlflow.log_metric("mae", mae)
+
+            remote_server_uri = "https://dagshub.com/Akashr-18/End-to-End-Diamond-Price-Prediction.mlflow"
+            mlflow.set_tracking_uri(remote_server_uri)
+
+            tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
+            model_name_convention = type(updated_model).__name__
+
+            if tracking_url_type_store != "file":
+                mlflow.sklearn.log_model(
+                    updated_model,
+                    "lr_model", 
+                    registered_model_name=model_name_convention
+                )
+            else:
+                mlflow.sklearn.log_model(updated_model, "model")
+
+        return updated_model, score_r2, mae, rmse
+    
+    def ridge_model(self, x_train, x_test, y_train, y_test):
+        updated_model = Ridge()
+        updated_model.fit(x_train,y_train)
+        y_pred = updated_model.predict(x_test)
+        score_r2 = r2_score(y_test, y_pred)
+        mae = mean_absolute_error(y_test, y_pred)
+        rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+
+        with mlflow.start_run():
+            mlflow.log_metric("r2", score_r2)
+            mlflow.log_metric("rmse", rmse)
+            mlflow.log_metric("mae", mae)
+
+            remote_server_uri = "https://dagshub.com/Akashr-18/End-to-End-Diamond-Price-Prediction.mlflow"
+            mlflow.set_tracking_uri(remote_server_uri)
+
+            tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
+            model_name_convention = type(updated_model).__name__
+
+            if tracking_url_type_store != "file":
+                mlflow.sklearn.log_model(
+                    updated_model,
+                    "lr_model", 
+                    registered_model_name=model_name_convention
+                )
+            else:
+                mlflow.sklearn.log_model(updated_model, "model")
+
+        return updated_model, score_r2, mae, rmse
+    
+    def elasticnet_model(self, x_train, x_test, y_train, y_test):
+        updated_model = ElasticNet()
+        updated_model.fit(x_train,y_train)
+        y_pred = updated_model.predict(x_test)
+        score_r2 = r2_score(y_test, y_pred)
+        mae = mean_absolute_error(y_test, y_pred)
+        rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+
+        with mlflow.start_run():
+            mlflow.log_metric("r2", score_r2)
+            mlflow.log_metric("rmse", rmse)
+            mlflow.log_metric("mae", mae)
+
+            remote_server_uri = "https://dagshub.com/Akashr-18/End-to-End-Diamond-Price-Prediction.mlflow"
+            mlflow.set_tracking_uri(remote_server_uri)
+
+            tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
+            model_name_convention = type(updated_model).__name__
+
+            if tracking_url_type_store != "file":
+                mlflow.sklearn.log_model(
+                    updated_model,
+                    "lr_model", 
+                    registered_model_name=model_name_convention
+                )
+            else:
+                mlflow.sklearn.log_model(updated_model, "model")
+
+        return updated_model, score_r2, mae, rmse
+    
+    def train_and_log_model(self, model, train_x, train_y, test_x, test_y):
         with mlflow.start_run():
             logger.info(f"MLflow train model started")
             model.fit(train_x, train_y)
@@ -124,7 +319,6 @@ class ModelFinder:
             mlflow.log_metric("rmse", rmse)
             mlflow.log_metric("mae", mae)
 
-            # For remote server only (Dagshub)
             remote_server_uri = "https://dagshub.com/Akashr-18/End-to-End-Diamond-Price-Prediction.mlflow"
             mlflow.set_tracking_uri(remote_server_uri)
 
@@ -132,7 +326,6 @@ class ModelFinder:
 
             model_name_convention = type(model).__name__
             if tracking_url_type_store != "file":
-                # https://mlflow.org/docs/latest/model-registry.html#api-workflow
                 mlflow.sklearn.log_model(
                     model,
                     "model", 
@@ -141,12 +334,6 @@ class ModelFinder:
             else:
                 mlflow.sklearn.log_model(model, "model")
 
-            # Save the model to the prediction_service/model directory
-            # model_path = "prediction_service/model"
-            # mlflow.pyfunc.save_model(model, model_path)
-
-            # mlflow.sklearn.log_model(model, "model")
-
             model_name = type(model).__name__.lower()
             model_path = f"service/model_{model_name}"
             mlflow.pyfunc.save_model(model, model_path)
@@ -154,31 +341,48 @@ class ModelFinder:
     @staticmethod
     def find_best_model_for_cluster(x_train, x_test, y_train, y_test):
         lr_model, lr_r2_score, lr_mae, lr_rmse = ModelFinder().linearregression_model(x_train, x_test, y_train, y_test) 
-        # svr_model, svr_r2_score, svr_mae, svr_rmse = self.svr_model(x_train, x_test, y_train, y_test)
-        # dt_model, dt_r2_score, dt_mae, dt_rmse = self.decisiontree_model(x_train, x_test, y_train, y_test)
+        ls_model, ls_r2_score, ls_mae, ls_rmse = ModelFinder().lasso_model(x_train, x_test, y_train, y_test)
+        rd_model, rd_r2_score, rd_mae, rd_rmse = ModelFinder().ridge_model(x_train, x_test, y_train, y_test)
+        en_model, en_r2_score, en_mae, en_rmse = ModelFinder().elasticnet_model(x_train, x_test, y_train, y_test)
+        dt_model, dt_r2_score, dt_mae, dt_rmse = ModelFinder().decisiontree_model(x_train, x_test, y_train, y_test)
+        # svr_model, svr_r2_score, svr_mae, svr_rmse = ModelFinder().svr_model(x_train, x_test, y_train, y_test)
         xgb_model, xgb_r2_score, xgb_mae, xgb_rmse = ModelFinder().xgboost_model(x_train, x_test, y_train, y_test)
         # rf_model, rf_r2_score, rf_mae, rf_rmse = ModelFinder().randomforest_model(x_train, x_test, y_train, y_test)
-        # print('LR: ', lr_r2_score, lr_mae, lr_rmse)
-        # print('SVR: ', svr_r2_score, svr_mae, svr_rmse)
-        # print('DT: ', dt_r2_score, dt_mae, dt_rmse)
-        logger.info(f"XGB model is {xgb_model}")
-        logger.info(f"RF model is {lr_model}")
-        ModelFinder().train_and_log_model(lr_model,x_train, x_test, y_train, y_test)
-        ModelFinder().train_and_log_model(xgb_model,x_train, x_test, y_train, y_test)
-        # logger.info(f"Eval Metrics for Random Forest model r2score: {rf_r2_score} mae: {rf_mae}, rmse: {rf_rmse}")
+        
+        logger.info(f"Linear Regression model: {lr_model}")
+        logger.info(f"Lasso Regression model: {ls_model}")
+        logger.info(f"Ridge Regression model: {rd_model}")
+        logger.info(f"ElasticNet Regression model: {en_model}")
+        logger.info(f"Decision Tree Regression model: {dt_model}")
+        # logger.info(f"Support Vector Regression model: {svr_model}")
+        logger.info(f"XGB model: {xgb_model}")
+        # logger.info(f"Random Forest model: {rf_model}")
+
+        logger.info(f"Eval Metrics for Linear Regression model r2score: {lr_r2_score} mae: {lr_mae}, rmse: {lr_rmse}")
+        logger.info(f"Eval Metrics for Lasso Regression model r2score: {ls_r2_score} mae: {ls_mae}, rmse: {ls_rmse}")
+        logger.info(f"Eval Metrics for Ridge Regression model r2score: {rd_r2_score} mae: {rd_mae}, rmse: {rd_rmse}")
+        logger.info(f"Eval Metrics for ElasticNet Regression model r2score: {en_r2_score} mae: {en_mae}, rmse: {en_rmse}")
+        logger.info(f"Eval Metrics for Decision Tree Regression model r2score: {dt_r2_score} mae: {dt_mae}, rmse: {dt_rmse}")
+        # logger.info(f"Eval Metrics for Support Vector model r2score: {svr_r2_score} mae: {svr_mae}, rmse: {svr_rmse}")
         logger.info(f"Eval Metrics for XgBoost model r2score: {xgb_r2_score} mae: {xgb_mae}, rmse: {xgb_rmse}")
 
         model_r2_scores = {
             'linear_regression': {'model': lr_model, 'r2_score': lr_r2_score},
-            # 'random_forest': {'model': rf_model, 'r2_score': rf_r2_score},
+            'lasso': {'model': ls_model, 'r2_score': ls_r2_score},
+            'ridge': {'model': rd_model, 'r2_score': rd_r2_score},
+            'elasticnet': {'model': en_model, 'r2_score': en_r2_score},
+            'decision_tree': {'model': dt_model, 'r2_score': dt_r2_score},
+            # 'support_vectors': {'model': svr_model, 'r2_score': svr_r2_score},
             'xgboost': {'model': xgb_model, 'r2_score': xgb_r2_score},
         }
+
         best_model_info = max(model_r2_scores.values(), key=lambda x: x['r2_score'])
         best_model = best_model_info['model']
         best_r2_score = best_model_info['r2_score']
         logger.info("Comparing DecisionTree, RandomForest, and XGBoost models")
         logger.info(f"The best model is {type(best_model).__name__} with an R-squared score of {best_r2_score}")
         model_name = type(best_model).__name__
+
         return best_model, model_name
 
     
