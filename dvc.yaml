@@ -15,7 +15,7 @@ stages:
     outs:
       - config/config.yaml
 
-  training:
+  model_training:
     cmd: python src/DiamondRegressor/pipeline/stage_03_model_training.py
     deps: 
     outs:
