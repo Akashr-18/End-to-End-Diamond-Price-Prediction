@@ -13,7 +13,6 @@ stages:
       - src/DiamondRegressor/pipeline/stage_02_data_preprocessing.py  
       - config/config.yaml
     outs:
-      - 
 
   model_training:
     cmd: python src/DiamondRegressor/pipeline/stage_03_model_training.py
