@@ -21,4 +21,4 @@ step 7. Update config/config.yaml and params.yaml(if req)
         Components
         Pipeline
         
-Step
+Step 8. 
