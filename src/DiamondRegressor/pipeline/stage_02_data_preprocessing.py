@@ -15,6 +15,7 @@ class DataPreprocessingTrainingPipeline:
         data_preprocessor = DataPreprocessing(config = data_preprocessing_config,
                                        config_dataingestion = data_ingestion_config)
         train_arr, test_arr = data_preprocessor.data_preprocessing()
+        return train_arr, test_arr
 
 if __name__ == '__main__':
     try:

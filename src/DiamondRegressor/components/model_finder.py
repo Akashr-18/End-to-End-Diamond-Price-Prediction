@@ -68,17 +68,16 @@ class ModelFinder:
     def randomforest_model(self, x_train, x_test, y_train, y_test):
         rf_model = RandomForestRegressor()
         params = {
-            # 'n_estimators'      : self.params['models']['RandomForest']['params']['n_estimators'],
-            # 'criterion'         : self.params['models']['RandomForest']['params']['criterion'],
-            # 'max_depth'         : self.params['models']['RandomForest']['params']['max_depth'],
-            # 'min_samples_split' : self.params['models']['RandomForest']['params']['min_samples_split'],
-            # 'min_samples_leaf'  : self.params['models']['RandomForest']['params']['min_samples_leaf'],
-            # 'bootstrap'         : self.params['models']['RandomForest']['params']['bootstrap'],
+            'n_estimators'      : self.params['models']['RandomForest']['params']['n_estimators'],
+            'criterion'         : self.params['models']['RandomForest']['params']['criterion'],
+            'max_depth'         : self.params['models']['RandomForest']['params']['max_depth'],
+            'min_samples_split' : self.params['models']['RandomForest']['params']['min_samples_split'],
+            'min_samples_leaf'  : self.params['models']['RandomForest']['params']['min_samples_leaf']
         }
-        # random_search_rf = RandomizedSearchCV(rf_model, param_distributions=params, n_iter=3, n_jobs=-1, cv=5)
-        # random_search_rf.fit(x_train, y_train)
-        # logger.info(f"Best params for RandomForest: {random_search_rf.best_params_}")
-        # updated_rf_model = random_search_rf.best_estimator_
+        random_search_rf = RandomizedSearchCV(rf_model, param_distributions=params, n_iter=3, n_jobs=-1, cv=5)
+        random_search_rf.fit(x_train, y_train)
+        logger.info(f"Best params for RandomForest: {random_search_rf.best_params_}")
+        updated_rf_model = random_search_rf.best_estimator_
         rf_model.fit(x_train,y_train)
         y_pred_rf = rf_model.predict(x_test)
         score_r2_rf = r2_score(y_test, y_pred_rf)
@@ -110,9 +109,10 @@ class ModelFinder:
     def decisiontree_model(self, x_train, x_test, y_train, y_test):
         model = DecisionTreeRegressor()
         params = {
-            'max_depth': [None, 10, 20, 30],
-            'min_samples_split': [2, 5, 10],
-            'min_samples_leaf': [1, 2, 4]
+            'criterion' : self.params['models']['DecisionTree']['params']['criterion'],
+            'max_depth': self.params['models']['DecisionTree']['params']['max_depth'],
+            'min_samples_split': self.params['models']['DecisionTree']['params']['min_samples_split'],
+            'min_samples_leaf': self.params['models']['DecisionTree']['params']['min_samples_leaf']
         }
         random_search = RandomizedSearchCV(model, param_distributions=params, n_iter=5, n_jobs=-1, cv=5)
         random_search.fit(x_train, y_train)
@@ -216,7 +216,14 @@ class ModelFinder:
         return updated_model, score_r2, mae, rmse
     
     def lasso_model(self, x_train, x_test, y_train, y_test):
-        updated_model = Lasso()
+        model = Lasso()
+        params = {
+            'alpha' : self.params['models']['Lasso']['params']['alpha']
+        }
+        lasso_model = RandomizedSearchCV(model, param_distributions=params, n_iter=4, n_jobs=-1, cv=3)
+        lasso_model.fit(x_train, y_train)
+        print("Best params for Lasso: ", lasso_model.best_params_)
+        updated_model = lasso_model.best_estimator_
         updated_model.fit(x_train,y_train)
         y_pred = updated_model.predict(x_test)
         score_r2 = r2_score(y_test, y_pred)
@@ -246,7 +253,14 @@ class ModelFinder:
         return updated_model, score_r2, mae, rmse
     
     def ridge_model(self, x_train, x_test, y_train, y_test):
-        updated_model = Ridge()
+        model = Ridge()
+        params = {
+            'alpha' : self.params['models']['Ridge']['params']['alpha']
+        }
+        ridge_model = RandomizedSearchCV(model, param_distributions=params, n_iter=4, n_jobs=-1, cv=3)
+        ridge_model.fit(x_train, y_train)
+        print("Best params for Ridge: ", ridge_model.best_params_)
+        updated_model = ridge_model.best_estimator_
         updated_model.fit(x_train,y_train)
         y_pred = updated_model.predict(x_test)
         score_r2 = r2_score(y_test, y_pred)
@@ -276,7 +290,15 @@ class ModelFinder:
         return updated_model, score_r2, mae, rmse
     
     def elasticnet_model(self, x_train, x_test, y_train, y_test):
-        updated_model = ElasticNet()
+        model = ElasticNet()
+        params = {
+            'alpha' : self.params['models']['ElasticNet']['params']['alpha'],
+            'l1_ratio': self.params['models']['ElasticNet']['params']['l1_ratio']
+        }
+        elasticnet_model = RandomizedSearchCV(model, param_distributions=params, n_iter=5, n_jobs=-1, cv=5)
+        elasticnet_model.fit(x_train, y_train)
+        print("Best params for Elastic net: ", elasticnet_model.best_params_)
+        updated_model = elasticnet_model.best_estimator_
         updated_model.fit(x_train,y_train)
         y_pred = updated_model.predict(x_test)
         score_r2 = r2_score(y_test, y_pred)
@@ -339,7 +361,7 @@ class ModelFinder:
             mlflow.pyfunc.save_model(model, model_path)
 
     @staticmethod
-    def find_best_model_for_cluster(x_train, x_test, y_train, y_test):
+    def find_best_model(x_train, x_test, y_train, y_test):
         lr_model, lr_r2_score, lr_mae, lr_rmse = ModelFinder().linearregression_model(x_train, x_test, y_train, y_test) 
         ls_model, ls_r2_score, ls_mae, ls_rmse = ModelFinder().lasso_model(x_train, x_test, y_train, y_test)
         rd_model, rd_r2_score, rd_mae, rd_rmse = ModelFinder().ridge_model(x_train, x_test, y_train, y_test)
@@ -347,7 +369,7 @@ class ModelFinder:
         dt_model, dt_r2_score, dt_mae, dt_rmse = ModelFinder().decisiontree_model(x_train, x_test, y_train, y_test)
         # svr_model, svr_r2_score, svr_mae, svr_rmse = ModelFinder().svr_model(x_train, x_test, y_train, y_test)
         xgb_model, xgb_r2_score, xgb_mae, xgb_rmse = ModelFinder().xgboost_model(x_train, x_test, y_train, y_test)
-        # rf_model, rf_r2_score, rf_mae, rf_rmse = ModelFinder().randomforest_model(x_train, x_test, y_train, y_test)
+        rf_model, rf_r2_score, rf_mae, rf_rmse = ModelFinder().randomforest_model(x_train, x_test, y_train, y_test)
         
         logger.info(f"Linear Regression model: {lr_model}")
         logger.info(f"Lasso Regression model: {ls_model}")
@@ -356,7 +378,7 @@ class ModelFinder:
         logger.info(f"Decision Tree Regression model: {dt_model}")
         # logger.info(f"Support Vector Regression model: {svr_model}")
         logger.info(f"XGB model: {xgb_model}")
-        # logger.info(f"Random Forest model: {rf_model}")
+        logger.info(f"Random Forest model: {rf_model}")
 
         logger.info(f"Eval Metrics for Linear Regression model r2score: {lr_r2_score} mae: {lr_mae}, rmse: {lr_rmse}")
         logger.info(f"Eval Metrics for Lasso Regression model r2score: {ls_r2_score} mae: {ls_mae}, rmse: {ls_rmse}")
@@ -365,6 +387,7 @@ class ModelFinder:
         logger.info(f"Eval Metrics for Decision Tree Regression model r2score: {dt_r2_score} mae: {dt_mae}, rmse: {dt_rmse}")
         # logger.info(f"Eval Metrics for Support Vector model r2score: {svr_r2_score} mae: {svr_mae}, rmse: {svr_rmse}")
         logger.info(f"Eval Metrics for XgBoost model r2score: {xgb_r2_score} mae: {xgb_mae}, rmse: {xgb_rmse}")
+        logger.info(f"Eval Metrics for Random Forest model r2score: {rf_r2_score} mae: {rf_mae}, rmse: {rf_rmse}")
 
         model_r2_scores = {
             'linear_regression': {'model': lr_model, 'r2_score': lr_r2_score},
@@ -372,8 +395,8 @@ class ModelFinder:
             'ridge': {'model': rd_model, 'r2_score': rd_r2_score},
             'elasticnet': {'model': en_model, 'r2_score': en_r2_score},
             'decision_tree': {'model': dt_model, 'r2_score': dt_r2_score},
-            # 'support_vectors': {'model': svr_model, 'r2_score': svr_r2_score},
             'xgboost': {'model': xgb_model, 'r2_score': xgb_r2_score},
+            'random_forest': {'model': rf_model, 'r2_score': rf_r2_score},
         }
 
         best_model_info = max(model_r2_scores.values(), key=lambda x: x['r2_score'])

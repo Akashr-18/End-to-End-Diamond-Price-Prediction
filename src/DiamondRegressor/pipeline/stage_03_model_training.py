@@ -2,20 +2,21 @@ from DiamondRegressor import logger
 from DiamondRegressor.config.configuration import ConfigurationManager
 from DiamondRegressor.components.model_training import Training
 from DiamondRegressor.components.model_finder import ModelFinder
+from DiamondRegressor.components.training import ModelTrainer
+import sys
+sys.path.append('.')
 
 STAGE_NAME = 'Model Training stage'
 
 class ModelTrainingPipeline:
     def __init__(self):
         pass
-    def main(self):
+    def main(self,train_arr,test_arr):
         config = ConfigurationManager()
-        data_preprocessing_configuration = config.get_data_preprocessing_config()
         training_configuration = config.get_model_training_config()
-        parameters_config = config.get_model_parameters_config()
-        training = Training(config = data_preprocessing_configuration,
-                 train_config = training_configuration)
-        training.create_cluster_specific_models()
+
+        training = ModelTrainer(config = training_configuration)
+        training.initate_model_training(train_arr, test_arr)
 
 if __name__ == '__main__':
     try:

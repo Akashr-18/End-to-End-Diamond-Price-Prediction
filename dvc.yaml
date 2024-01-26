@@ -1,21 +1,36 @@
 stages:
-
-  data_ingestion:
-    cmd: python src/DiamondRegressor/pipeline/stage_01_data_ingestion.py
-    deps:
-      - src/DiamondRegressor/pipeline/stage_01_data_ingestion.py
-      - config/config.yaml
-    outs:
-
-  data_preprocessing:
-    cmd: python src/DiamondRegressor/pipeline/stage_02_data_preprocessing.py  
-    deps:
-      - src/DiamondRegressor/pipeline/stage_02_data_preprocessing.py  
-      - config/config.yaml
-    outs:
-      - config/config.yaml
-
   training:
-    cmd: python src/DiamondRegressor/pipeline/stage_03_model_training.py
+    cmd: python src/DiamondRegressor/pipeline/training_pipeline.py
     deps: 
+      - config/config.yaml
+      - src/DiamondRegressor/pipeline/training_pipeline.py
+      - src/DiamondRegressor/components/data_ingestion.py
+      - src/DiamondRegressor/components/data_preprocessing.py
+      - src/DiamondRegressor/components/training.py
+      - src/DiamondRegressor/components/model_finder.py
+    params:
+      - models.XgBoost.params.n_estimators
+      - models.XgBoost.params.learning_rate
+      - models.XgBoost.params.max_depth
+      - models.XgBoost.params.min_child_weight
+      - models.XgBoost.params.gamma
+      - models.RandomForest.params.n_estimators
+      - models.RandomForest.params.criterion
+      - models.RandomForest.params.max_depth
+      - models.RandomForest.params.min_samples_split
+      - models.RandomForest.params.min_samples_leaf
+      - models.RandomForest.params.bootstrap
+      - models.DecisionTree.params.criterion
+      - models.DecisionTree.params.max_depth
+      - models.DecisionTree.params.min_samples_split
+      - models.DecisionTree.params.min_samples_leaf
+      - models.Lasso.params.alpha
+      - models.Ridge.params.alpha
+      - models.ElasticNet.params.alpha
+      - models.ElasticNet.params.l1_ratio
     outs:
+      - artifacts/data_ingestion/train_test.csv
+      - artifacts/data_ingestion/train.csv
+      - artifacts/data_ingestion/test.csv
+      - artifacts/preprocessing_object/preprocessor.pkl
+      - artifacts/models
