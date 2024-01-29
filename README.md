@@ -8,7 +8,16 @@
 ![my badge](https://img.shields.io/badge/-DVC-darkblue)
 
 ## Features
-- **Predictive Model**: Utilizes machine learning algorithms to forecast diamond prices based on attributes like carat, cut, color, clarity, and dimensions.
+- **Predictive Models Compared**:
+  - Linear Regression
+  - Lasso
+  - Ridge
+  - ElasticNet
+  - Decision Tree
+  - XGBoost
+  - Random Forest
+- **Logging**: Implementation of logging for tracking events and debugging.
+- **Custom Exceptions**: Custom exceptions for handling errors.
 - **Modular Codebase**: Organized and modularized code structure for easy maintenance and scalability.
 - **Integration with DVC**: Data Version Control (DVC) is integrated for code reproducibility.
 - **Integration with MLflow**: MLflow is integrated for experiment tracking, model management, and reproducibility.
