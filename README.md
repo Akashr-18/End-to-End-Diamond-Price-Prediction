@@ -9,7 +9,7 @@
 
 # About The Project
 
-The objective of this project is to forecast the price of diamonds by considering their diverse characteristics, including Color, Clarity, Cut, Table, Depths, and Dimensions. <br>
+The objective of this project is to forecast the price of diamonds by considering their diverse characteristics, including Color, Clarity, Cut, Table, Depths, and Dimensions. <br><br>
 carat - Weight of the diamond <br>
 cut - Quality of the cut(Fair, Good, Very Good, Premium, Ideal) <br>
 color - Colour of the diamond, from J (Worst) to D (Best) <br>
