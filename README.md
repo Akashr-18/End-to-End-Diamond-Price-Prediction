@@ -21,6 +21,20 @@ The objective of this project is to forecast the price of diamonds by considerin
 **table** - Width of top of diamond relative to the widest point <br>
 **price** - Price in US dollars <br>
 
+| Attribute | Description |
+| --------- | ----------- |
+| carat     | Weight of the diamond |
+| cut       | Quality of the cut (Fair, Good, Very Good, Premium, Ideal) |
+| color     | Color of the diamond, from J (Worst) to D (Best) |
+| clarity   | How clear the diamond is, from I1 (Worst) to IF (Best) |
+| x         | Length in mm |
+| y         | Width in mm |
+| z         | Depth in mm |
+| depth     | Total depth percentage. Formula: z / mean(x,y) |
+| table     | Width of top of diamond relative to the widest point |
+| price     | Price in US dollars |
+
+
 # Dataset Used
 
 This dataset used for this project is Diamond dataset taken from Kaggle.
