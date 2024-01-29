@@ -14,7 +14,6 @@ carat - Weight of the diamond \n
 
 
 cut - Quality of the cut(Fair, Good, Very Good, Premium, Ideal)
-
 color - Colour of the diamond, from J (Worst) to D (Best)
 clarity - How clear the diamond is, from I1 (Worst) to IF (Best)
 x - Length in mm
