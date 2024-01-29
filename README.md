@@ -14,7 +14,7 @@
 - **Integration with MLflow**: MLflow is integrated for experiment tracking, model management, and reproducibility.
 - **Integration with DagsHub**: DagsHub is used for collaboration, sharing, and versioning of machine learning projects.
 - **Integration with GitHub Actions**: GitHub Actions is employed for continuous integration and deployment.
-- **Integration with Airflow**: Airflow is used for workflow orchestration and automation.
+- **Integration with Airflow**: Airflow is used for workflow orchestration and automation (Continous Training).
 
 ## About The Project
 
