@@ -6,7 +6,6 @@
 ![my badge](https://img.shields.io/badge/Flask-App-green)
 ![my badge](https://img.shields.io/badge/ML-Flow-yellowgreen)
 ![my badge](https://img.shields.io/badge/AI-OPS-orange)
-![my badge](https://img.shields.io/badge/-Heroku-purple)
 ![my badge](https://img.shields.io/badge/-GIT-green)
 ![my badge](https://img.shields.io/badge/-DVC-darkblue)
 
