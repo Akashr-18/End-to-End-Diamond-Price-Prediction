@@ -10,7 +10,7 @@
 ## Features
 - **Predictive Model**: Utilizes machine learning algorithms to forecast diamond prices based on attributes like carat, cut, color, clarity, and dimensions.
 - **Modular Codebase**: Organized and modularized code structure for easy maintenance and scalability.
-- **Integration with DVC**: Data Version Control (DVC) is integrated for efficient data management and versioning.
+- **Integration with DVC**: Data Version Control (DVC) is integrated for code reproducibility.
 - **Integration with MLflow**: MLflow is integrated for experiment tracking, model management, and reproducibility.
 - **Integration with DagsHub**: DagsHub is used for collaboration, sharing, and versioning of machine learning projects.
 - **Integration with GitHub Actions**: GitHub Actions is employed for continuous integration and deployment.
