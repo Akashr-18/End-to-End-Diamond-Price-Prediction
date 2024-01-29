@@ -15,13 +15,13 @@ carat - Weight of the diamond \n
 
 cut - Quality of the cut(Fair, Good, Very Good, Premium, Ideal) <br>
 color - Colour of the diamond, from J (Worst) to D (Best) <br>
-clarity - How clear the diamond is, from I1 (Worst) to IF (Best)
-x - Length in mm
-y - Width in mm
-z - Depth in mm
-depth - Total depth percentage. Formula =z / mean(x,y)
-table - Width of top of diamond relative to the widest point
-price - Price in US dollars
+clarity - How clear the diamond is, from I1 (Worst) to IF (Best) <br>
+x - Length in mm <br>
+y - Width in mm <br>
+z - Depth in mm <br>
+depth - Total depth percentage. Formula =z / mean(x,y) <br>
+table - Width of top of diamond relative to the widest point <br>
+price - Price in US dollars <br>
 
 # Dataset Used
 
