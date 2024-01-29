@@ -7,7 +7,16 @@
 ![my badge](https://img.shields.io/badge/-GIT-green)
 ![my badge](https://img.shields.io/badge/-DVC-darkblue)
 
-# About The Project
+## Features
+- **Predictive Model**: Utilizes machine learning algorithms to forecast diamond prices based on attributes like carat, cut, color, clarity, and dimensions.
+- **Modular Codebase**: Organized and modularized code structure for easy maintenance and scalability.
+- **Integration with DVC**: Data Version Control (DVC) is integrated for efficient data management and versioning.
+- **Integration with MLflow**: MLflow is integrated for experiment tracking, model management, and reproducibility.
+- **Integration with DagsHub**: DagsHub is used for collaboration, sharing, and versioning of machine learning projects.
+- **Integration with GitHub Actions**: GitHub Actions is employed for continuous integration and deployment.
+- **Integration with Airflow**: Airflow is used for workflow orchestration and automation.
+
+## About The Project
 
 The objective of this project is to forecast the price of diamonds by considering their diverse characteristics, including Color, Clarity, Cut, Table, Depths, and Dimensions. <br><br>
 
@@ -25,7 +34,7 @@ The objective of this project is to forecast the price of diamonds by considerin
 | price     | Price in US dollars |
 
 
-# Dataset Used
+## Dataset Used
 
 This dataset used for this project is Diamond dataset taken from Kaggle.
 
