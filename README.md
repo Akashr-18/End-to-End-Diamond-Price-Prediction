@@ -96,7 +96,7 @@ set MLFLOW_TRACKING_PASSWORD=<Your password>
 dvc init
 ```  
 
-4. Run DVC pipeline
+3. For model training, Run DVC pipeline
 
 ```bash 
 dvc repro
