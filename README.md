@@ -55,7 +55,7 @@ This dataset used for this project is Diamond dataset taken from Kaggle.
     python app.py
     ```
 
-2. Open your web browser and go to [http://localhost:8501](http://localhost:5000).
+2. Open your web browser and go to [http://localhost:5000](http://localhost:5000).
 
 3. Preview of the Web App
 
