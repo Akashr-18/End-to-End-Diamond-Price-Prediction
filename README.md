@@ -74,6 +74,34 @@ This dataset used for this project is Diamond dataset taken from Kaggle.
 <img width="960" alt="image" src="https://github.com/Akashr-18/Data_Store/blob/main/Screenshot%20(16).png?raw=true">
 <br>
 
+## Model Training : 
+
+1. Initiialize Dagshub credentials
+
+```bash 
+set MLFLOW_TRACKING_URI=<Your Tracking URI>
+```
+
+```bash 
+set MLFLOW_TRACKING_USERNAME=<Your username> 
+```
+
+```bash 
+set MLFLOW_TRACKING_PASSWORD=<Your password>
+```
+
+2. Initialize DVC.
+
+```bash 
+dvc init
+```  
+
+4. Run DVC pipeline
+
+```bash 
+dvc repro
+```
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
