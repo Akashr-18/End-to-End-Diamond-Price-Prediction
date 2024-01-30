@@ -64,12 +64,12 @@ This dataset used for this project is Diamond dataset taken from Kaggle.
 <img width="960" alt="image" src="https://github.com/Akashr-18/Data_Store/blob/main/Screenshot%20(14).png?raw=true">
 <br>
 
-#### Home page1 :
+#### Enter the values :
 
 <img width="960" alt="image" src="https://github.com/Akashr-18/Data_Store/blob/main/Screenshot%20(15).png?raw=true">
 <br>
 
-#### Home page2 :
+#### Prediction Output :
 
 <img width="960" alt="image" src="https://github.com/Akashr-18/Data_Store/blob/main/Screenshot%20(16).png?raw=true">
 <br>
