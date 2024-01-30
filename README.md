@@ -47,3 +47,19 @@ The objective of this project is to forecast the price of diamonds by considerin
 
 This dataset used for this project is Diamond dataset taken from Kaggle.
 
+## Usage
+
+1. Run the Streamlit app:
+
+    ```bash
+    python app.py
+    ```
+
+2. Open your web browser and go to [http://localhost:8501](http://localhost:5000).
+
+3. Preview of the Web App
+
+#### Home page :
+
+<img width="960" alt="image" src="https://github.com/Akashr-18/Data_Store/blob/main/Screenshot%20(14).png?raw=true">
+<br>
