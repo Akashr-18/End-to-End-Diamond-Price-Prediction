@@ -8,6 +8,7 @@ from DiamondRegressor.entity.config_entity import (DataIngestionConfig,
 from DiamondRegressor.constants import *
 from DiamondRegressor.utils.common import read_yaml, create_directories
 
+#Creating
 class ConfigurationManager:
     def __init__(self,
                  config_filepath = CONFIG_FILE_PATH,
