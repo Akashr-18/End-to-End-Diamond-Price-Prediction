@@ -16,7 +16,7 @@
   - Decision Tree
   - XGBoost
   - Random Forest
-- **Logging**: Implementation of logging for tracking events and debugging.
+- **Logging**: Implementation of logging for the tracking events and debugging.
 - **Custom Exceptions**: Custom exceptions for handling errors.
 - **Modular Codebase**: Organized and modularized code structure for easy maintenance and scalability.
 - **Integration with DVC**: Data Version Control (DVC) is integrated for code reproducibility.
