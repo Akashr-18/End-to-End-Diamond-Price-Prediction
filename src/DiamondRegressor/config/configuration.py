@@ -16,10 +16,10 @@ class ConfigurationManager:
         
         self.config = read_yaml(config_filepath)
         self.params = read_yaml(params_filepath)
-
         create_directories([self.config.artifacts_root])
 
     def get_data_ingestion_config(self) -> DataIngestionConfig:
+      
         config = self.config.data_ingestion
         create_directories([config.root_dir])
 
@@ -31,10 +31,10 @@ class ConfigurationManager:
             train_data_file_path = config.train_data_file_path,
             test_data_file_path = config.test_data_file_path
         )
-
         return data_ingestion_config
     
     def get_data_preprocessing_config(self) -> DataPreprocessingConfig:
+      
         config = self.config.data_preprocessing
         create_directories([config.root_dir])
 
@@ -42,10 +42,10 @@ class ConfigurationManager:
             root_dir= config.root_dir,
             preprocessor_file_path= config.preprocessor_file_path
         )
-
         return data_preprocessing_config
 
     def get_model_training_config(self) -> ModelTrainingConfig:
+      
         config = self.config.model_training
         create_directories([config.root_dir])
         create_directories([config.plot_dir])
