@@ -30,7 +30,6 @@ def index():
                 predict_pipeline=PredictPipeline()
                 pred=predict_pipeline.predict(final_data)
                 result=round(pred[0],2)
-
                 return render_template('index.html', response=result)
                
         except Exception as e:
