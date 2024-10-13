@@ -4,7 +4,6 @@ from prediction_service import predict
 from DiamondRegressor.pipeline.prediction_pipeline import PredictPipeline, CustomData
 
 webapp_root = 'webapp'
-
 static_dir = os.path.join(webapp_root, 'static')
 template_dir = os.path.join(webapp_root, 'templates')
 
