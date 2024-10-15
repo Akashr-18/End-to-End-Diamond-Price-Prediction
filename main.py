@@ -29,7 +29,6 @@ try:
     model_training_obj = ModelTrainingPipeline()
     model_training_obj.main(train_arr, test_arr)
     logger.info(f'>>>>>>> Stage3: {STAGE_NAME} completed <<<<<<<')
-    
 except Exception as e:
     logger.exception(e)
     raise e
