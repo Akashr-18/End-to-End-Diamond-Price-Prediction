@@ -20,7 +20,6 @@ try:
     data_preprocessing_obj = DataPreprocessingTrainingPipeline()
     train_arr, test_arr = data_preprocessing_obj.main()
     logger.info(f'>>>>>>> Stage2: {STAGE_NAME} completed <<<<<<<')
-        
 except Exception as e:
     logger.exception(e)
     raise e
