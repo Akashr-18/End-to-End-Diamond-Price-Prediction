@@ -26,7 +26,6 @@
 - **Integration with Airflow**: Airflow is used for workflow orchestration and automation (Continous Training).
 
 ## About The Project
-
 The objective of this project is to forecast the price of diamonds by considering their diverse characteristics, including Color, Clarity, Cut, Table, Depths, and Dimensions. <br><br>
 
 | Attribute | Description |
