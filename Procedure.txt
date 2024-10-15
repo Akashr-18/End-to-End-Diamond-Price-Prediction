@@ -1,6 +1,7 @@
 conda create -n ml_endtoend_diamond python==3.10 -y
 
 step 1. Create Template.py
+
 step 2. Update requirements.txt 
         Update setup.py
 step 3. Create logging file in src/DiamondRegressor/__init__.py and check it
