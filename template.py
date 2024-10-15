@@ -2,8 +2,7 @@ from pathlib import Path
 import os
 import logging
 
-logging.basicConfig(level=logging.INFO, 
-                    format = '[%(asctime)s : %(message)s')
+logging.basicConfig(level=logging.INFO, format = '[%(asctime)s : %(message)s')
 
 folder_name = 'DiamondRegressor'
 
@@ -29,6 +28,7 @@ list_of_files = [
 ]
 
 for filepath in list_of_files:
+  
     filepath = Path(filepath)
     filedir, filename = os.path.split(filepath)
 
