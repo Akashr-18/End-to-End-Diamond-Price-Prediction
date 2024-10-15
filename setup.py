@@ -10,7 +10,6 @@ AUTHOR_USER_NAME = "Akashr-18"
 SRC_REPO = "DiamondRegressor"
 AUTHOR_EMAIL = "sujayakash07@gmail.com"
 
-
 setuptools.setup(
     name=SRC_REPO,
     version=__version__,
