@@ -14,7 +14,6 @@ logging.basicConfig(
     handlers = [
         logging.StreamHandler(sys.stdout),
         logging.FileHandler(logging_filepath)
-    ]
-)
+    ])
 
 logger = logging.getLogger('DiamnondRegressorLogger')
