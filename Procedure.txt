@@ -4,7 +4,9 @@ step 1. Create Template.py
 
 step 2. Update requirements.txt 
         Update setup.py
+
 step 3. Create logging file in src/DiamondRegressor/__init__.py and check it
+
 step 4. Create common.py in utils folder and all common functions
 step 5. Update config/config.yaml and params.yaml(if req)
         Create Notebook: 01_data_ingestion.ipynb
